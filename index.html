@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#0b0f14" id="theme-color-meta" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>Daily Macros (Recomp Plan)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       /* Dark Theme (Default) */
@@ -116,36 +117,26 @@
     }
 
     .icon-btn {
-      width: var(--touch);
-      height: var(--touch);
+      width: 40px;
+      height: 40px;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--text);
-      border-radius: 14px;
+      border-radius: 12px;
       display: grid;
       place-items: center;
       cursor: pointer;
+      transition: all 0.15s;
     }
 
     .icon-btn:active {
-      transform: scale(0.97);
+      transform: scale(0.92);
     }
 
-    .reset-btn {
-      min-height: var(--touch);
-      min-width: 80px;
-      padding: 0 16px;
-      border: 1px solid rgba(251, 113, 133, 0.35);
-      background: rgba(251, 113, 133, 0.1);
+    .icon-btn.danger {
       color: var(--danger);
-      border-radius: 14px;
-      font-size: 0.92rem;
-      font-weight: 650;
-      cursor: pointer;
-    }
-
-    .reset-btn:active {
-      transform: scale(0.97);
+      background: rgba(251, 113, 133, 0.1);
+      border-color: rgba(251, 113, 133, 0.35);
     }
 
     .totals {
@@ -178,25 +169,11 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .stat.cal {
-      color: var(--accent);
-    }
-
-    .stat.pro {
-      color: var(--protein);
-    }
-
-    .stat.carb {
-      color: var(--carbs);
-    }
-
-    .stat.fat {
-      color: var(--fats);
-    }
-
-    .stat.fib {
-      color: var(--fiber);
-    }
+    .stat.cal { color: var(--accent); }
+    .stat.pro { color: var(--protein); }
+    .stat.carb { color: var(--carbs); }
+    .stat.fat { color: var(--fats); }
+    .stat.fib { color: var(--fiber); }
 
     /* Progress Bars */
     .stat-bar-bg {
@@ -219,24 +196,20 @@
       width: 0%;
     }
 
-    .stat.cal .stat-bar-fill {
-      background: var(--accent);
-    }
+    .stat.cal .stat-bar-fill { background: var(--accent); }
+    .stat.pro .stat-bar-fill { background: var(--protein); }
+    .stat.carb .stat-bar-fill { background: var(--carbs); }
+    .stat.fat .stat-bar-fill { background: var(--fats); }
+    .stat.fib .stat-bar-fill { background: var(--fiber); }
 
-    .stat.pro .stat-bar-fill {
-      background: var(--protein);
-    }
-
-    .stat.carb .stat-bar-fill {
-      background: var(--carbs);
-    }
-
-    .stat.fat .stat-bar-fill {
-      background: var(--fats);
-    }
-
-    .stat.fib .stat-bar-fill {
-      background: var(--fiber);
+    .chart-container {
+      position: relative;
+      height: 100px;
+      width: 100%;
+      margin: 16px 0 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .target-msg {
@@ -244,13 +217,17 @@
       font-size: 0.8rem;
       color: var(--muted);
       text-align: center;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      align-items: center;
     }
 
     .content {
       padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
     }
 
     .search-wrap {
@@ -281,6 +258,26 @@
       transform: translateY(-50%);
       color: var(--muted);
       pointer-events: none;
+    }
+
+    .create-food-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--surface-2);
+      border: 1px dashed var(--muted);
+      border-radius: 16px;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.1s;
+    }
+    .create-food-btn:active {
+      transform: scale(0.98);
     }
 
     .chips {
@@ -329,44 +326,23 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    /* Water Tracker styles */
-    .water-wrap {
+    .save-meal-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px 16px;
-    }
-
-    .water-amount {
-      font-size: 1.4rem;
-      font-weight: 750;
-      color: var(--protein);
-      display: flex;
-      align-items: baseline;
       gap: 4px;
-    }
-
-    .water-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .water-btn {
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-weight: 650;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: transform 0.1s;
-    }
-
-    .water-btn:active {
-      transform: scale(0.95);
     }
 
     .log-empty {
@@ -522,6 +498,105 @@
       background: #34d399 !important;
     }
 
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .modal {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 400px;
+      padding: 20px;
+      transform: translateY(20px) scale(0.95);
+      transition: all 0.2s;
+      box-shadow: var(--shadow);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-overlay.active .modal {
+      transform: translateY(0) scale(1);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .modal-header h3 { font-size: 1.1rem; }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .custom-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+    
+    .custom-form input {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      outline: none;
+      width: 100%;
+      min-width: 0;
+    }
+    
+    .custom-form input:focus {
+      border-color: var(--accent);
+    }
+    
+    .custom-macros {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+    
+    .save-custom-btn {
+      background: var(--accent);
+      color: #04221c;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    [data-theme="light"] .save-custom-btn { color: #fff; }
+
     .toast {
       position: fixed;
       left: 50%;
@@ -572,20 +647,27 @@
         </div>
         <div class="actions">
           <button class="icon-btn" id="theme-btn" aria-label="Toggle light/dark theme">
-            <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            <!-- Moon Icon by default -->
+            <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
           </button>
-          <button class="reset-btn" id="reset-btn" type="button">Reset</button>
+          <button class="icon-btn" id="settings-btn" aria-label="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+          <button class="icon-btn" id="history-btn" aria-label="History">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </button>
+          <button class="icon-btn danger" id="reset-btn" aria-label="Reset Day">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -622,7 +704,13 @@
           </div>
         </div>
       </div>
-      <div class="target-msg">Goal: ~2000 kcal | 150g Protein</div>
+      
+      <!-- Chart.js Canvas -->
+      <div class="chart-container">
+        <canvas id="macroChart"></canvas>
+      </div>
+      <div class="target-msg" id="target-msg"></div>
+      
     </header>
 
     <main class="content">
@@ -631,26 +719,28 @@
           <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
           <path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
-        <input id="search" type="search" placeholder="Search foods…" autocomplete="off" />
+        <input id="search" type="search" placeholder="Search foods or meals…" autocomplete="off" />
       </div>
+      
+      <button class="create-food-btn" id="open-modal-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        Create Custom Food
+      </button>
 
       <div class="chips" id="chips"></div>
 
-      <!-- Water Tracker -->
-      <section class="log-card" aria-label="Hydration">
-        <div class="section-title">Hydration (Target: 3.5L)</div>
-        <div class="water-wrap">
-          <div class="water-amount"><span id="water-tot">0</span> <span
-              style="font-size:0.9rem;color:var(--muted)">ml</span></div>
-          <div class="water-actions">
-            <button class="water-btn" data-amt="250">+ 250ml</button>
-            <button class="water-btn" data-amt="500">+ 500ml</button>
-          </div>
-        </div>
-      </section>
-
       <section class="log-card" aria-label="Today's log">
-        <div class="section-title">Today's Foods</div>
+        <div class="section-title">
+          <span>Today's Foods</span>
+          <button class="save-meal-btn" id="save-meal-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Save as Meal
+          </button>
+        </div>
         <div id="log"></div>
       </section>
 
@@ -660,16 +750,75 @@
       </section>
     </main>
   </div>
+  
+  <!-- Custom Food Modal -->
+  <div class="modal-overlay" id="custom-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Custom Food</h3>
+        <button class="close-btn" id="close-modal">&times;</button>
+      </div>
+      <form class="custom-form" id="custom-form">
+        <input type="text" id="custom-name" placeholder="Food Name (e.g. Pizza)" required />
+        <input type="text" id="custom-serving" placeholder="Serving Size (e.g. 1 slice)" required />
+        <div class="custom-macros">
+          <input type="number" id="custom-cal" placeholder="Calories" required min="0" step="1"/>
+          <input type="number" id="custom-pro" placeholder="Protein (g)" required min="0" step="0.1"/>
+          <input type="number" id="custom-carb" placeholder="Carbs (g)" required min="0" step="0.1"/>
+          <input type="number" id="custom-fat" placeholder="Fats (g)" required min="0" step="0.1"/>
+        </div>
+        <input type="number" id="custom-fib" placeholder="Fiber (g) - Optional" min="0" step="0.1"/>
+        <button type="submit" class="save-custom-btn">Save to My Foods</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Macro Goals</h3>
+        <button class="close-btn" id="close-settings">&times;</button>
+      </div>
+      <form class="custom-form" id="settings-form">
+        <input type="number" id="set-cal" placeholder="Calorie Goal" required min="1" step="1"/>
+        <div class="custom-macros">
+          <input type="number" id="set-pro" placeholder="Protein Goal (g)" required min="1" step="1"/>
+          <input type="number" id="set-carb" placeholder="Carb Goal (g)" required min="1" step="1"/>
+          <input type="number" id="set-fat" placeholder="Fat Goal (g)" required min="1" step="1"/>
+          <input type="number" id="set-fib" placeholder="Fiber Goal (g)" required min="1" step="1"/>
+        </div>
+        <button type="submit" class="save-custom-btn">Save Targets</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div class="modal-overlay" id="history-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Calendar History</h3>
+        <button class="close-btn" id="close-history">&times;</button>
+      </div>
+      <div id="history-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+  </div>
 
   <div class="toast" id="toast" role="status"></div>
 
   <script>
-    const STORAGE_KEY = "daily-macros-recomp-v2";
+    const STORAGE_KEY = "daily-macros-recomp-v3";
+    const TARGETS_KEY = "daily-macros-targets";
+    const HISTORY_KEY = "daily-macros-history";
 
-    // Macro Goals
-    const TARGETS = { cal: 2000, pro: 150, carb: 175, fat: 65, fib: 25 };
+    // Macro Goals (Default Recomp)
+    let TARGETS = { cal: 2000, pro: 150, carb: 175, fat: 65, fib: 25 };
+    try {
+      const storedTargets = localStorage.getItem(TARGETS_KEY);
+      if (storedTargets) TARGETS = JSON.parse(storedTargets);
+    } catch(e) {}
 
-    const FOODS = [
+    const DEFAULT_FOODS = [
       // Pre-Workout / Breakfast
       { id: "apple", name: "Apple", serving: "1 Medium", category: "Pre-Workout", cal: 62, pro: 0, carb: 17, fat: 0, fib: 3 },
       { id: "milk-pre", name: "Whole Fat Milk", serving: "50 ml", category: "Pre-Workout", cal: 31, pro: 2, carb: 2, fat: 2, fib: 0 },
@@ -704,12 +853,34 @@
       { id: "oil", name: "Cooking Oil / Ghee", serving: "1 tsp (5ml)", category: "Extras", cal: 45, pro: 0, carb: 0, fat: 5, fib: 0 },
     ];
 
-    const CATEGORIES = ["All", ...Array.from(new Set(FOODS.map((f) => f.category)))];
+    let customFoods = [];
+    try {
+      const stored = localStorage.getItem("daily-macros-custom-foods");
+      if (stored) customFoods = JSON.parse(stored);
+    } catch(e) {}
 
-    const emptyTotals = () => ({ cal: 0, pro: 0, carb: 0, fat: 0, fib: 0, water: 0 });
+    function getAllFoods() {
+      return [...customFoods, ...DEFAULT_FOODS];
+    }
+    
+    function getCategories() {
+      return ["All", ...Array.from(new Set(getAllFoods().map((f) => f.category)))];
+    }
+
+    const emptyTotals = () => ({ cal: 0, pro: 0, carb: 0, fat: 0, fib: 0 });
 
     function todayKey() {
       return new Date().toISOString().slice(0, 10);
+    }
+
+    function saveToHistory(pastState) {
+      if (pastState.totals.cal === 0) return;
+      try {
+        let history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+        history = history.filter(h => h.date !== pastState.date);
+        history.push(pastState);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+      } catch(e) {}
     }
 
     function loadState() {
@@ -718,6 +889,7 @@
         if (!raw) return { date: todayKey(), totals: emptyTotals(), log: [] };
         const parsed = JSON.parse(raw);
         if (parsed.date !== todayKey()) {
+          saveToHistory(parsed);
           return { date: todayKey(), totals: emptyTotals(), log: [] };
         }
 
@@ -764,6 +936,66 @@
     const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
     const sunIcon = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
 
+    // Chart Setup
+    let macroChart;
+    const ctx = document.getElementById('macroChart').getContext('2d');
+    
+    function initChart() {
+      // Use CSS variables for chart colors
+      const isLight = root.getAttribute('data-theme') === 'light';
+      const colors = isLight 
+        ? ['#0284c7', '#d97706', '#db2777', '#e2e8f0'] // Light mode
+        : ['#7dd3fc', '#fbbf24', '#f472b6', '#1d2733']; // Dark mode
+
+      const pro = Math.max(0, state.totals.pro);
+      const carb = Math.max(0, state.totals.carb);
+      const fat = Math.max(0, state.totals.fat);
+      
+      const isEmpty = pro === 0 && carb === 0 && fat === 0;
+
+      macroChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Protein', 'Carbs', 'Fats'],
+          datasets: [{
+            data: isEmpty ? [0, 0, 0, 1] : [pro, carb, fat],
+            backgroundColor: isEmpty ? [colors[3], colors[3], colors[3], colors[3]] : [colors[0], colors[1], colors[2]],
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '75%',
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: !isEmpty }
+          },
+          animation: { animateScale: true }
+        }
+      });
+    }
+
+    function updateChart() {
+      if (!macroChart) return;
+      
+      const isLight = root.getAttribute('data-theme') === 'light';
+      const colors = isLight 
+        ? ['#0284c7', '#d97706', '#db2777', '#e2e8f0']
+        : ['#7dd3fc', '#fbbf24', '#f472b6', '#1d2733'];
+
+      const pro = Math.max(0, state.totals.pro);
+      const carb = Math.max(0, state.totals.carb);
+      const fat = Math.max(0, state.totals.fat);
+      
+      const isEmpty = pro === 0 && carb === 0 && fat === 0;
+
+      macroChart.data.datasets[0].data = isEmpty ? [0, 0, 0, 1] : [pro, carb, fat];
+      macroChart.data.datasets[0].backgroundColor = isEmpty ? [colors[3], colors[3], colors[3], colors[3]] : [colors[0], colors[1], colors[2]];
+      macroChart.update();
+    }
+
     function applyTheme(theme) {
       if (theme === 'light') {
         root.setAttribute('data-theme', 'light');
@@ -774,6 +1006,7 @@
         document.getElementById("theme-icon").innerHTML = sunIcon;
         document.getElementById("theme-color-meta").setAttribute("content", "#0b0f14");
       }
+      if(macroChart) updateChart();
     }
 
     const savedTheme = localStorage.getItem('theme');
@@ -812,8 +1045,9 @@
       document.getElementById("bar-carb").style.width = Math.min(100, (carb / TARGETS.carb) * 100) + "%";
       document.getElementById("bar-fat").style.width = Math.min(100, (fat / TARGETS.fat) * 100) + "%";
       document.getElementById("bar-fib").style.width = Math.min(100, (fib / TARGETS.fib) * 100) + "%";
-
-      document.getElementById("water-tot").textContent = state.totals.water || 0;
+      
+      document.getElementById("target-msg").textContent = `Goal: ~${TARGETS.cal} kcal | ${TARGETS.pro}g Protein`;
+      updateChart();
     }
 
     function renderLog() {
@@ -826,11 +1060,13 @@
       for (const item of state.log) {
         counts[item.id] = (counts[item.id] || 0) + item.qty;
       }
-
+      
+      const allFoods = getAllFoods();
+      
       logEl.innerHTML = Object.entries(counts)
         .filter(([id, qty]) => qty > 0)
         .map(([id, qty]) => {
-          const food = FOODS.find((f) => f.id === id);
+          const food = allFoods.find((f) => f.id === id);
           if (!food) return "";
           return `
             <div class="log-item">
@@ -852,14 +1088,16 @@
     }
 
     function renderChips() {
-      chipsEl.innerHTML = CATEGORIES.map(
+      const cats = getCategories();
+      chipsEl.innerHTML = cats.map(
         (c) => `<button class="chip${c === category ? " active" : ""}" type="button" data-cat="${c}">${c}</button>`
       ).join("");
     }
 
     function filteredFoods() {
       const q = query.trim().toLowerCase();
-      return FOODS.filter((f) => {
+      const allFoods = getAllFoods();
+      return allFoods.filter((f) => {
         const catOk = category === "All" || f.category === category;
         const qOk = !q || f.name.toLowerCase().includes(q) || f.serving.toLowerCase().includes(q);
         return catOk && qOk;
@@ -904,7 +1142,7 @@
     }
 
     function addFood(id, qty, button, quiet = false) {
-      const food = FOODS.find((f) => f.id === id);
+      const food = getAllFoods().find((f) => f.id === id);
       if (!food) return;
 
       state.totals.cal += food.cal * qty;
@@ -918,7 +1156,6 @@
         existing.qty += qty;
         existing.qty = round(existing.qty * 100) / 100; // Fix float precision
 
-        // Remove from array if hitting 0 or below through adjustment
         if (existing.qty <= 0) {
           state.log = state.log.filter(i => i.id !== id);
         }
@@ -938,7 +1175,7 @@
     }
 
     function removeFood(id) {
-      const food = FOODS.find((f) => f.id === id);
+      const food = getAllFoods().find((f) => f.id === id);
       if (!food) return;
 
       const index = state.log.findIndex(item => item.id === id);
@@ -958,30 +1195,145 @@
       }
     }
 
+    // Modal Events
+    const customModal = document.getElementById("custom-modal");
+    document.getElementById("open-modal-btn").addEventListener("click", () => {
+      customModal.classList.add("active");
+    });
+    document.getElementById("close-modal").addEventListener("click", () => {
+      customModal.classList.remove("active");
+    });
+
+    const settingsModal = document.getElementById("settings-modal");
+    document.getElementById("settings-btn").addEventListener("click", () => {
+      document.getElementById("set-cal").value = TARGETS.cal;
+      document.getElementById("set-pro").value = TARGETS.pro;
+      document.getElementById("set-carb").value = TARGETS.carb;
+      document.getElementById("set-fat").value = TARGETS.fat;
+      document.getElementById("set-fib").value = TARGETS.fib;
+      settingsModal.classList.add("active");
+    });
+    document.getElementById("close-settings").addEventListener("click", () => {
+      settingsModal.classList.remove("active");
+    });
+
+    // History Modal Logic
+    const historyModal = document.getElementById("history-modal");
+    document.getElementById("history-btn").addEventListener("click", () => {
+      let history = [];
+      try {
+        history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+      } catch(e) {}
+      
+      const listEl = document.getElementById("history-list");
+      if (history.length === 0) {
+        listEl.innerHTML = '<p class="log-empty" style="padding:0">No history yet. (Days will save automatically when the date changes).</p>';
+      } else {
+        history.sort((a,b) => b.date.localeCompare(a.date));
+        listEl.innerHTML = history.map(h => `
+          <div style="background:var(--surface);padding:12px;border-radius:12px;border:1px solid var(--border);">
+            <div style="font-weight:600;margin-bottom:6px;">${new Date(h.date).toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'})}</div>
+            <div style="font-size:0.85rem;color:var(--muted);display:flex;justify-content:space-between;">
+              <span>Cal: <b>${Math.round(h.totals.cal)}</b></span>
+              <span>Pro: <b>${round(h.totals.pro)}g</b></span>
+              <span>Carb: <b>${round(h.totals.carb)}g</b></span>
+              <span>Fat: <b>${round(h.totals.fat)}g</b></span>
+            </div>
+          </div>
+        `).join("");
+      }
+      historyModal.classList.add("active");
+    });
+    document.getElementById("close-history").addEventListener("click", () => {
+      historyModal.classList.remove("active");
+    });
+
+    // Save Meal Logic
+    document.getElementById("save-meal-btn").addEventListener("click", () => {
+      if(state.log.length === 0) {
+        return showToast("Log some foods first to save as a meal!");
+      }
+      
+      const mealName = prompt("Name your meal (e.g. My Breakfast):");
+      if(!mealName) return;
+
+      const mealFood = {
+        id: "meal_" + Date.now(),
+        name: mealName,
+        serving: "1 Meal",
+        category: "Meals",
+        cal: round(state.totals.cal),
+        pro: round(state.totals.pro),
+        carb: round(state.totals.carb),
+        fat: round(state.totals.fat),
+        fib: round(state.totals.fib),
+      };
+
+      customFoods.push(mealFood);
+      localStorage.setItem("daily-macros-custom-foods", JSON.stringify(customFoods));
+      
+      category = "Meals";
+      renderChips();
+      renderFoods();
+      showToast(`Saved meal: ${mealName}`);
+    });
+
+    // Handle Custom Food Submit
+    document.getElementById("custom-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      const newFood = {
+        id: "custom_" + Date.now(),
+        name: document.getElementById("custom-name").value.trim(),
+        serving: document.getElementById("custom-serving").value.trim(),
+        category: "Custom",
+        cal: parseFloat(document.getElementById("custom-cal").value) || 0,
+        pro: parseFloat(document.getElementById("custom-pro").value) || 0,
+        carb: parseFloat(document.getElementById("custom-carb").value) || 0,
+        fat: parseFloat(document.getElementById("custom-fat").value) || 0,
+        fib: parseFloat(document.getElementById("custom-fib").value) || 0,
+      };
+      
+      customFoods.push(newFood);
+      localStorage.setItem("daily-macros-custom-foods", JSON.stringify(customFoods));
+      
+      customModal.classList.remove("active");
+      e.target.reset();
+      
+      category = "Custom";
+      renderChips();
+      renderFoods();
+      showToast("Custom food saved!");
+    });
+
+    // Handle Settings Submit
+    document.getElementById("settings-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      TARGETS = {
+        cal: parseInt(document.getElementById("set-cal").value) || 2000,
+        pro: parseInt(document.getElementById("set-pro").value) || 150,
+        carb: parseInt(document.getElementById("set-carb").value) || 175,
+        fat: parseInt(document.getElementById("set-fat").value) || 65,
+        fib: parseInt(document.getElementById("set-fib").value) || 25,
+      };
+      localStorage.setItem(TARGETS_KEY, JSON.stringify(TARGETS));
+      settingsModal.classList.remove("active");
+      renderTotals();
+      showToast("Macro targets saved!");
+    });
+
     // Handle Log interactions (+ / - / Remove)
     logEl.addEventListener("click", (e) => {
-      // Full remove
       const rmBtn = e.target.closest(".remove-btn");
       if (rmBtn) {
         return removeFood(rmBtn.dataset.id);
       }
 
-      // Inline adjust +/-
       const adjBtn = e.target.closest(".log-adj-btn");
       if (adjBtn) {
         const qty = parseFloat(adjBtn.dataset.qty);
         addFood(adjBtn.dataset.id, qty, null, true);
       }
-    });
-
-    // Handle Water Tracker
-    document.querySelector(".water-actions").addEventListener("click", (e) => {
-      const btn = e.target.closest(".water-btn");
-      if (!btn) return;
-      state.totals.water = (state.totals.water || 0) + parseInt(btn.dataset.amt);
-      saveState();
-      renderTotals();
-      showToast(`Added ${btn.dataset.amt}ml water`);
     });
 
     // Handle Food List additions
@@ -1014,6 +1366,7 @@
       showToast("Day reset");
     });
 
+    initChart();
     renderChips();
     renderTotals();
     renderLog();
