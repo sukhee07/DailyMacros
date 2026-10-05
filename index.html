@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -54,7 +55,8 @@
       padding: 0;
     }
 
-    html, body {
+    html,
+    body {
       min-height: 100%;
       background: var(--bg);
       color: var(--text);
@@ -176,11 +178,66 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .stat.cal { color: var(--accent); }
-    .stat.pro { color: var(--protein); }
-    .stat.carb { color: var(--carbs); }
-    .stat.fat { color: var(--fats); }
-    .stat.fib { color: var(--fiber); }
+    .stat.cal {
+      color: var(--accent);
+    }
+
+    .stat.pro {
+      color: var(--protein);
+    }
+
+    .stat.carb {
+      color: var(--carbs);
+    }
+
+    .stat.fat {
+      color: var(--fats);
+    }
+
+    .stat.fib {
+      color: var(--fiber);
+    }
+
+    /* Progress Bars */
+    .stat-bar-bg {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      margin-top: 6px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    [data-theme="light"] .stat-bar-bg {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .stat.cal .stat-bar-fill {
+      background: var(--accent);
+    }
+
+    .stat.pro .stat-bar-fill {
+      background: var(--protein);
+    }
+
+    .stat.carb .stat-bar-fill {
+      background: var(--carbs);
+    }
+
+    .stat.fat .stat-bar-fill {
+      background: var(--fats);
+    }
+
+    .stat.fib .stat-bar-fill {
+      background: var(--fiber);
+    }
 
     .target-msg {
       margin-top: 10px;
@@ -234,7 +291,9 @@
       scrollbar-width: none;
     }
 
-    .chips::-webkit-scrollbar { display: none; }
+    .chips::-webkit-scrollbar {
+      display: none;
+    }
 
     .chip {
       flex: 0 0 auto;
@@ -272,6 +331,44 @@
       font-weight: 700;
     }
 
+    /* Water Tracker styles */
+    .water-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 16px;
+    }
+
+    .water-amount {
+      font-size: 1.4rem;
+      font-weight: 750;
+      color: var(--protein);
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .water-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .water-btn {
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 650;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .water-btn:active {
+      transform: scale(0.95);
+    }
+
     .log-empty {
       padding: 0 16px 16px;
       color: var(--muted);
@@ -292,7 +389,7 @@
       display: flex;
       flex-direction: column;
     }
-    
+
     .log-item-info span {
       color: var(--muted);
       font-variant-numeric: tabular-nums;
@@ -303,25 +400,46 @@
     .log-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .log-qty {
       font-weight: 700;
       font-variant-numeric: tabular-nums;
+      min-width: 32px;
+      text-align: center;
+    }
+
+    /* Inline Adjustments */
+    .log-adj-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1rem;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .log-adj-btn:active {
+      transform: scale(0.9);
     }
 
     .remove-btn {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border: 1px solid rgba(251, 113, 133, 0.35);
       background: rgba(251, 113, 133, 0.1);
       color: var(--danger);
       border-radius: 8px;
-      font-size: 1.2rem;
       display: grid;
       place-items: center;
       cursor: pointer;
+      margin-left: 4px;
     }
 
     .remove-btn:active {
@@ -380,7 +498,7 @@
       place-items: center;
       transition: transform 0.1s;
     }
-    
+
     .add-btn.half {
       background: var(--surface-2);
       color: var(--text);
@@ -432,11 +550,18 @@
         grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 6px;
       }
-      .stat { padding: 8px 4px; }
-      .stat .value { font-size: 0.92rem; }
+
+      .stat {
+        padding: 8px 4px;
+      }
+
+      .stat .value {
+        font-size: 0.92rem;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="app">
     <header class="dashboard">
@@ -447,19 +572,55 @@
         </div>
         <div class="actions">
           <button class="icon-btn" id="theme-btn" aria-label="Toggle light/dark theme">
-            <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
             </svg>
           </button>
           <button class="reset-btn" id="reset-btn" type="button">Reset</button>
         </div>
       </div>
+
+      <!-- Totals & Progress -->
       <div class="totals">
-        <div class="stat cal"><span class="label">Cal</span><span class="value" id="tot-cal">0</span></div>
-        <div class="stat pro"><span class="label">Protein</span><span class="value" id="tot-pro">0g</span></div>
-        <div class="stat carb"><span class="label">Carbs</span><span class="value" id="tot-carb">0g</span></div>
-        <div class="stat fat"><span class="label">Fats</span><span class="value" id="tot-fat">0g</span></div>
-        <div class="stat fib"><span class="label">Fiber</span><span class="value" id="tot-fib">0g</span></div>
+        <div class="stat cal">
+          <span class="label">Cal</span><span class="value" id="tot-cal">0</span>
+          <div class="stat-bar-bg">
+            <div class="stat-bar-fill" id="bar-cal"></div>
+          </div>
+        </div>
+        <div class="stat pro">
+          <span class="label">Protein</span><span class="value" id="tot-pro">0g</span>
+          <div class="stat-bar-bg">
+            <div class="stat-bar-fill" id="bar-pro"></div>
+          </div>
+        </div>
+        <div class="stat carb">
+          <span class="label">Carbs</span><span class="value" id="tot-carb">0g</span>
+          <div class="stat-bar-bg">
+            <div class="stat-bar-fill" id="bar-carb"></div>
+          </div>
+        </div>
+        <div class="stat fat">
+          <span class="label">Fats</span><span class="value" id="tot-fat">0g</span>
+          <div class="stat-bar-bg">
+            <div class="stat-bar-fill" id="bar-fat"></div>
+          </div>
+        </div>
+        <div class="stat fib">
+          <span class="label">Fiber</span><span class="value" id="tot-fib">0g</span>
+          <div class="stat-bar-bg">
+            <div class="stat-bar-fill" id="bar-fib"></div>
+          </div>
+        </div>
       </div>
       <div class="target-msg">Goal: ~2000 kcal | 150g Protein</div>
     </header>
@@ -467,16 +628,29 @@
     <main class="content">
       <div class="search-wrap">
         <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-          <path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+          <path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
         <input id="search" type="search" placeholder="Search foods…" autocomplete="off" />
       </div>
 
       <div class="chips" id="chips"></div>
 
+      <!-- Water Tracker -->
+      <section class="log-card" aria-label="Hydration">
+        <div class="section-title">Hydration (Target: 3.5L)</div>
+        <div class="water-wrap">
+          <div class="water-amount"><span id="water-tot">0</span> <span
+              style="font-size:0.9rem;color:var(--muted)">ml</span></div>
+          <div class="water-actions">
+            <button class="water-btn" data-amt="250">+ 250ml</button>
+            <button class="water-btn" data-amt="500">+ 500ml</button>
+          </div>
+        </div>
+      </section>
+
       <section class="log-card" aria-label="Today's log">
-        <div class="section-title">Today</div>
+        <div class="section-title">Today's Foods</div>
         <div id="log"></div>
       </section>
 
@@ -490,17 +664,20 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script>
-    const STORAGE_KEY = "daily-macros-recomp-v2"; // Bumped version for new schema
+    const STORAGE_KEY = "daily-macros-recomp-v2";
+
+    // Macro Goals
+    const TARGETS = { cal: 2000, pro: 150, carb: 175, fat: 65, fib: 25 };
 
     const FOODS = [
       // Pre-Workout / Breakfast
       { id: "apple", name: "Apple", serving: "1 Medium", category: "Pre-Workout", cal: 62, pro: 0, carb: 17, fat: 0, fib: 3 },
       { id: "milk-pre", name: "Whole Fat Milk", serving: "50 ml", category: "Pre-Workout", cal: 31, pro: 2, carb: 2, fat: 2, fib: 0 },
       { id: "black-coffee", name: "Black Coffee", serving: "1 cup", category: "Pre-Workout", cal: 2, pro: 0, carb: 0, fat: 0, fib: 0 },
-      
+
       // Post-Workout
       { id: "oats", name: "Oats", serving: "50g", category: "Post-Workout", cal: 195, pro: 7, carb: 33, fat: 3, fib: 5 },
-      { id: "whey", name: "Whey Protein", serving: "1 Scoop (~30g)", category: "Post-Workout", cal: 120, pro: 24, carb: 3, fat: 2, fib: 1 },
+      { id: "yeast", name: "Yeast Protein", serving: "1 Scoop (~40g)", category: "Post-Workout", cal: 165, pro: 25, carb: 7, fat: 2, fib: 1 },
       { id: "milk-post", name: "Whole Fat Milk", serving: "100 ml", category: "Post-Workout", cal: 62, pro: 3.3, carb: 4.7, fat: 3.3, fib: 0 },
       { id: "pb", name: "Peanut Butter", serving: "1 Tbsp", category: "Post-Workout", cal: 94, pro: 4, carb: 3, fat: 8, fib: 1 },
       { id: "almond", name: "Almond", serving: "1 nut", category: "Post-Workout", cal: 7, pro: 0.2, carb: 0.2, fat: 0.6, fib: 0.2 },
@@ -520,7 +697,8 @@
       // Carbs & Sides
       { id: "rice", name: "Cooked Rice", serving: "100g", category: "Carbs", cal: 130, pro: 2.7, carb: 28, fat: 0, fib: 1 },
       { id: "dal", name: "Cooked Dal", serving: "1 bowl (~150g)", category: "Carbs", cal: 133, pro: 8, carb: 23.3, fat: 1.3, fib: 5.3 },
-      { id: "chapati", name: "Ghee Chapati", serving: "1 piece", category: "Carbs", cal: 110, pro: 3, carb: 15, fat: 4, fib: 2 },
+      { id: "ghee_chapati", name: "Ghee Chapati", serving: "1 piece", category: "Carbs", cal: 150, pro: 3, carb: 15, fat: 4, fib: 2 },
+      { id: "chapati", name: "Chapati", serving: "1 piece", category: "Carbs", cal: 110, pro: 3, carb: 15, fat: 1, fib: 2 },
       { id: "curd", name: "Curd / Yogurt", serving: "100g", category: "Extras", cal: 60, pro: 3, carb: 4, fat: 3, fib: 0 },
       { id: "salad", name: "Salad", serving: "1 bowl", category: "Extras", cal: 15, pro: 0, carb: 3, fat: 0, fib: 2 },
       { id: "oil", name: "Cooking Oil / Ghee", serving: "1 tsp (5ml)", category: "Extras", cal: 45, pro: 0, carb: 0, fat: 5, fib: 0 },
@@ -528,7 +706,7 @@
 
     const CATEGORIES = ["All", ...Array.from(new Set(FOODS.map((f) => f.category)))];
 
-    const emptyTotals = () => ({ cal: 0, pro: 0, carb: 0, fat: 0, fib: 0 });
+    const emptyTotals = () => ({ cal: 0, pro: 0, carb: 0, fat: 0, fib: 0, water: 0 });
 
     function todayKey() {
       return new Date().toISOString().slice(0, 10);
@@ -542,8 +720,7 @@
         if (parsed.date !== todayKey()) {
           return { date: todayKey(), totals: emptyTotals(), log: [] };
         }
-        
-        // Migrate old array of strings to array of objects {id, qty}
+
         let logData = [];
         if (Array.isArray(parsed.log)) {
           logData = parsed.log.map(item => {
@@ -551,7 +728,7 @@
             return item;
           });
         }
-        
+
         return {
           date: parsed.date,
           totals: { ...emptyTotals(), ...parsed.totals },
@@ -616,25 +793,42 @@
     }
 
     function renderTotals() {
-      document.getElementById("tot-cal").textContent = Math.round(state.totals.cal);
-      document.getElementById("tot-pro").textContent = round(state.totals.pro) + "g";
-      document.getElementById("tot-carb").textContent = round(state.totals.carb) + "g";
-      document.getElementById("tot-fat").textContent = round(state.totals.fat) + "g";
-      document.getElementById("tot-fib").textContent = round(state.totals.fib) + "g";
+      // Prevent negative rendering
+      const cal = Math.max(0, state.totals.cal);
+      const pro = Math.max(0, state.totals.pro);
+      const carb = Math.max(0, state.totals.carb);
+      const fat = Math.max(0, state.totals.fat);
+      const fib = Math.max(0, state.totals.fib);
+
+      document.getElementById("tot-cal").textContent = Math.round(cal);
+      document.getElementById("tot-pro").textContent = round(pro) + "g";
+      document.getElementById("tot-carb").textContent = round(carb) + "g";
+      document.getElementById("tot-fat").textContent = round(fat) + "g";
+      document.getElementById("tot-fib").textContent = round(fib) + "g";
+
+      // Update Progress Bars
+      document.getElementById("bar-cal").style.width = Math.min(100, (cal / TARGETS.cal) * 100) + "%";
+      document.getElementById("bar-pro").style.width = Math.min(100, (pro / TARGETS.pro) * 100) + "%";
+      document.getElementById("bar-carb").style.width = Math.min(100, (carb / TARGETS.carb) * 100) + "%";
+      document.getElementById("bar-fat").style.width = Math.min(100, (fat / TARGETS.fat) * 100) + "%";
+      document.getElementById("bar-fib").style.width = Math.min(100, (fib / TARGETS.fib) * 100) + "%";
+
+      document.getElementById("water-tot").textContent = state.totals.water || 0;
     }
 
     function renderLog() {
       if (!state.log.length) {
-        logEl.innerHTML = '<p class="log-empty">Tap + on a food to start logging.</p>';
+        logEl.innerHTML = '<p class="log-empty">No foods logged today yet.</p>';
         return;
       }
-      
+
       const counts = {};
       for (const item of state.log) {
         counts[item.id] = (counts[item.id] || 0) + item.qty;
       }
-      
+
       logEl.innerHTML = Object.entries(counts)
+        .filter(([id, qty]) => qty > 0)
         .map(([id, qty]) => {
           const food = FOODS.find((f) => f.id === id);
           if (!food) return "";
@@ -645,8 +839,12 @@
                 <span>${round(food.cal * qty)} cal</span>
               </div>
               <div class="log-actions">
+                <button class="log-adj-btn" type="button" data-id="${id}" data-qty="-0.5">-</button>
                 <span class="log-qty">×${qty}</span>
-                <button class="remove-btn" type="button" data-id="${id}" aria-label="Remove ${food.name}">-</button>
+                <button class="log-adj-btn" type="button" data-id="${id}" data-qty="0.5">+</button>
+                <button class="remove-btn" type="button" data-id="${id}" aria-label="Remove ${food.name}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
               </div>
             </div>`;
         })
@@ -705,47 +903,53 @@
       toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1400);
     }
 
-    function addFood(id, qty, button) {
+    function addFood(id, qty, button, quiet = false) {
       const food = FOODS.find((f) => f.id === id);
       if (!food) return;
-      
+
       state.totals.cal += food.cal * qty;
       state.totals.pro += food.pro * qty;
       state.totals.carb += food.carb * qty;
       state.totals.fat += food.fat * qty;
       state.totals.fib += food.fib * qty;
-      
+
       const existing = state.log.find(item => item.id === id);
       if (existing) {
         existing.qty += qty;
-      } else {
+        existing.qty = round(existing.qty * 100) / 100; // Fix float precision
+
+        // Remove from array if hitting 0 or below through adjustment
+        if (existing.qty <= 0) {
+          state.log = state.log.filter(i => i.id !== id);
+        }
+      } else if (qty > 0) {
         state.log.push({ id, qty });
       }
-      
+
       saveState();
       renderTotals();
       renderLog();
-      
+
       if (button) {
         button.classList.add("flash");
         setTimeout(() => button.classList.remove("flash"), 180);
       }
-      showToast(`Added ${qty === 0.5 ? '½ ' : ''}${food.name}`);
+      if (!quiet) showToast(`Added ${qty === 0.5 ? '½ ' : ''}${food.name}`);
     }
 
     function removeFood(id) {
       const food = FOODS.find((f) => f.id === id);
       if (!food) return;
-      
+
       const index = state.log.findIndex(item => item.id === id);
       if (index > -1) {
         const item = state.log[index];
-        state.totals.cal = Math.max(0, state.totals.cal - food.cal * item.qty);
-        state.totals.pro = Math.max(0, state.totals.pro - food.pro * item.qty);
-        state.totals.carb = Math.max(0, state.totals.carb - food.carb * item.qty);
-        state.totals.fat = Math.max(0, state.totals.fat - food.fat * item.qty);
-        state.totals.fib = Math.max(0, state.totals.fib - food.fib * item.qty);
-        
+        state.totals.cal -= food.cal * item.qty;
+        state.totals.pro -= food.pro * item.qty;
+        state.totals.carb -= food.carb * item.qty;
+        state.totals.fat -= food.fat * item.qty;
+        state.totals.fib -= food.fib * item.qty;
+
         state.log.splice(index, 1);
         saveState();
         renderTotals();
@@ -754,12 +958,33 @@
       }
     }
 
+    // Handle Log interactions (+ / - / Remove)
     logEl.addEventListener("click", (e) => {
-      const btn = e.target.closest(".remove-btn");
-      if (!btn) return;
-      removeFood(btn.dataset.id);
+      // Full remove
+      const rmBtn = e.target.closest(".remove-btn");
+      if (rmBtn) {
+        return removeFood(rmBtn.dataset.id);
+      }
+
+      // Inline adjust +/-
+      const adjBtn = e.target.closest(".log-adj-btn");
+      if (adjBtn) {
+        const qty = parseFloat(adjBtn.dataset.qty);
+        addFood(adjBtn.dataset.id, qty, null, true);
+      }
     });
 
+    // Handle Water Tracker
+    document.querySelector(".water-actions").addEventListener("click", (e) => {
+      const btn = e.target.closest(".water-btn");
+      if (!btn) return;
+      state.totals.water = (state.totals.water || 0) + parseInt(btn.dataset.amt);
+      saveState();
+      renderTotals();
+      showToast(`Added ${btn.dataset.amt}ml water`);
+    });
+
+    // Handle Food List additions
     foodListEl.addEventListener("click", (e) => {
       const btn = e.target.closest(".add-btn");
       if (!btn) return;
@@ -795,5 +1020,5 @@
     renderFoods();
   </script>
 </body>
-</html>
 
+</html>
